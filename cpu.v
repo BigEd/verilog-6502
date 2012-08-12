@@ -106,7 +106,7 @@ wire [dw-1:0]   Y = AXYS[SEL_Y];	// Y register
 wire [dw-1:0]   S = AXYS[SEL_S];	// Stack pointer 
 `endif
 
-wire [dw-1:0] P = { N, V, 2'b0, D, I, Z, C };
+wire [dw-1:0] P = { N, V, 2'b11, D, I, Z, C };
 
 /*
  * instruction decoder/sequencer
@@ -298,7 +298,7 @@ always @*
     endcase
 
 //always @( PC )
-	//$display( "%t, PC:%04x A:%02x X:%02x Y:%02x S:%02x C:%d Z:%d V:%d N:%d", $time, PC, A, X, Y, S, C, Z, V, N );
+//	$display( "%t, PC:%04x IR:%02x A:%02x X:%02x Y:%02x S:%02x C:%d Z:%d V:%d N:%d P:%02x", $time, PC, IR, A, X, Y, S, C, Z, V, N, P );
 
 `endif
 
@@ -448,7 +448,7 @@ always @*
 
 	PUSH1:	 DO = php ? P : ADD;
 
-	BRK2:	 DO = (IRQ | NMI_edge) ? P : P | 8'b0001_0000; // B bit should be parameterised
+	BRK2:	 DO = (IRQ | NMI_edge) ? (P & ~8'b0001_0000) : P; // B bit should be parameterised
 
 	default: DO = regfile;
     endcase
@@ -593,6 +593,7 @@ ALU #(.dw(dw)) _ALU(
 	 .AI(AI),
 	 .BI(BI),
 	 .CI(CI),
+	 .BCD(adc_bcd & (state == FETCH)),
 	 .CO(CO),
 	 .OUT(ADD),
 	 .V(AV),
@@ -999,7 +1000,7 @@ always @(posedge clk)
 
 always @(posedge clk)
      if( state == DECODE && RDY )
-     	casex( IR[7:0] )  // just decode the low 8 bits
+     	casex( IR )
 		8'b0xxx_xx01,	// ORA, AND, EOR, ADC
      		8'b1x1x_xx01,	// LDA, SBC
      		8'bxxxx_1010,	// ASLA, ROLA, LSRA, RORA, T[XS][SX], DEX, NOP,

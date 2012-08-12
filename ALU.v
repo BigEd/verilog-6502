@@ -129,7 +129,7 @@ always @(posedge clk)
                        ;
 	Z   <= ~|temp[dw-1:0];
 	N   <= temp[dw-1];
-	V   <= AI[dw-1] ^ BI[dw-1] ^ temp[dw-1] ^ temp[dw]; 
+	V   <= AI[dw-1] ^ temp_BI[dw-1] ^ temp[dw-1] ^ temp[dw]; 
 `ifdef BCD_ENABLED
 	HC  <= temp_HC;
 `endif
