@@ -1,4 +1,4 @@
-A Verilog HDL project for CPU cores related to the old MOS 6502 CPU.
+A Verilog HDL project for CPU cores related to the original MOS 6502 CPU.
 
 Have fun. 
 
@@ -16,7 +16,9 @@ Please note:
 
 - The core has had next to no testing,
 
-- A very simple assembler will be released shortly.
+- There's an in-browser emulator at http://biged.github.com/6502js/
+
+- Assembler support is catalogued at http://forum.6502.org/viewtopic.php?f=2&t=1851
 
 - There are also verilog and support files here for a small system on
   FPGA, intended for xilinx spartan 3 as found on OHO GOP 24-pin module.
