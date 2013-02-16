@@ -593,14 +593,13 @@ ALU #(.dw(dw)) _ALU(
 	 .AI(AI),
 	 .BI(BI),
 	 .CI(CI),
-	 .BCD(adc_bcd & (state == FETCH)),
 	 .CO(CO),
 	 .OUT(ADD),
 	 .V(AV),
 	 .Z(AZ),
 	 .N(AN),
 `ifdef BCD_ENABLED
-	 .BCD(adc_bcd),
+	 .BCD(adc_bcd & (state == FETCH)),
 	 .HC(HC),
 `endif
 	 .RDY(RDY) );
