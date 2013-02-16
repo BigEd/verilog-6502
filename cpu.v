@@ -150,7 +150,7 @@ reg adj_bcd;		// results should be BCD adjusted
  * some flip flops to remember we're doing special instructions. These
  * get loaded at the DECODE state, and used later
  */
-reg bit;		// doing BIT instruction
+reg bti;		// doing BIT instruction (renamed: system verilog keyword)
 reg plp;		// doing PLP instruction
 reg php;		// doing PHP instruction 
 reg clc;		// clear carry
@@ -796,7 +796,7 @@ always @(posedge clk)
     else if( state == DECODE ) begin
 	if( plp )
 	    Z <= ADD[1];
-	else if( (load_reg & (regsel != SEL_S)) | compare | bit )
+	else if( (load_reg & (regsel != SEL_S)) | compare | bti )
 	    Z <= AZ;
     end
 
@@ -810,7 +810,7 @@ always @(posedge clk)
 	    N <= ADD[dw-1];
 	else if( (load_reg & (regsel != SEL_S)) | compare )
 	    N <= AN;
-    end else if( state == FETCH && bit ) 
+    end else if( state == FETCH && bti ) 
 	N <= DIMUX[dw-1];
 
 /*
@@ -850,7 +850,7 @@ always @(posedge clk )
 	if( adc_sbc ) V <= AV;
 	if( clv )     V <= 0;
 	if( plp )     V <= ADD[dw-2];
-    end else if( state == FETCH && bit ) 
+    end else if( state == FETCH && bti ) 
 	V <= DIMUX[dw-2];
 
 /*
@@ -1199,9 +1199,9 @@ always @(posedge clk )
      if( state == DECODE && RDY )
      	casex( IR[7:0] )  // just decode the low 8 bits
 		8'b0010_x100:   // BIT zp/abs	
-				bit <= 1;
+				bti <= 1;
 
-		default:	bit <= 0; 
+		default:	bti <= 0; 
 	endcase
 
 /*
