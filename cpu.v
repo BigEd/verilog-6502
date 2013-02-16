@@ -160,7 +160,7 @@ reg sed;		// set decimal
 reg cli;		// clear interrupt
 reg sei;		// set interrupt
 reg clv;		// clear overflow 
-reg brk;		// doing BRK
+// reg brk;		// doing BRK
 
 reg res;		// in reset
 
@@ -369,9 +369,13 @@ always @(posedge clk)
  * Address Generator 
  */
 
+parameter dw_m1 = dw -1;
+
 parameter
-	ZEROPAGE  = 0, // {dw{1'b0}},		// all zero
-	STACKPAGE = 1; // {(dw-1){1'b0}, 1};	// one
+	ZEROPAGE = {dw{1'b0}};			// all zero
+parameter
+	STACKPAGE = 1'b1;	// one
+//	STACKPAGE = {dw_m1{1'b0}, 1'b1};	// one
 
 always @*
     case( state )
@@ -681,7 +685,7 @@ always @*
 
 	BRA1: 	AI = ABH;	// don't use PCH in case we're
 
-	FETCH:	AI = load_only ? 0 : regfile;
+	FETCH:	AI = load_only ? {dw{1'b0}} : regfile;
 
 	DECODE,
 	ABS1:	AI = {dw{1'bx}};	// don't care
@@ -738,11 +742,11 @@ always @*
 
 	READ,
 	REG:	CI = rotate ? C :
-		     shift ? 0 : inc;
+		     shift ? 1'b0 : inc;
 
 	FETCH:	CI = rotate  ? C :
-		     compare ? 1 : 
-		     (shift | load_only) ? 0 : C;
+		     compare ? 1'b1 : 
+		     (shift | load_only) ? 1'b0 : C;
 
 	PULL0,
 	RTI0,
@@ -1214,7 +1218,7 @@ always @(posedge clk )
 	clv <= (IR[7:0] == 8'hb8);
 	cld <= (IR[7:0] == 8'hd8);
 	sed <= (IR[7:0] == 8'hf8);
-	brk <= (IR[7:0] == 8'h00);
+//	brk <= (IR[7:0] == 8'h00);
      end
 
 always @(posedge clk)
