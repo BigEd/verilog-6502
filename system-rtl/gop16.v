@@ -145,7 +145,7 @@ tinybootrom _rom1 (
 reg [7:0] userled_r;
 always @(posedge clk)
   if (!rnw & led_select_w)
-    userled_r <= databus_r;
+    userled_r <= databus_r[7:0];
 assign userled = userled_r;
 
 // fpga normal practice: an onchip bus is the output of a wide mux
